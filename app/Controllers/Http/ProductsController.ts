@@ -20,7 +20,7 @@ export default class ProductsController {
 
     if (category && subCategory) {
       const newProductSchema = schema.create({
-        tile: schema.string({ trim: true }),
+        title: schema.string({ trim: true }),
         address: schema.string(),
         calendar_days: schema.string(),
         description: schema.string(),
@@ -32,7 +32,7 @@ export default class ProductsController {
 
       const user = await auth.authenticate();
 
-      product.tile = payload.tile;
+      product.title = payload.title;
       product.userId = user.id;
       product.categoryId = category.id;
       product.subCategoryId = subCategory.id;
@@ -70,7 +70,7 @@ export default class ProductsController {
 
     if (product && category && subCategory) {
       const updateProductSchema = schema.create({
-        tile: schema.string({ trim: true }),
+        title: schema.string({ trim: true }),
         address: schema.string(),
         calendar_days: schema.string(),
         description: schema.string(),
@@ -81,7 +81,7 @@ export default class ProductsController {
 
       const user = await auth.authenticate();
 
-      product.tile = payload.tile;
+      product.title = payload.title;
       product.userId = user.id;
       product.categoryId = category.id;
       product.subCategoryId = subCategory.id;

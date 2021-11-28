@@ -9,7 +9,7 @@ export default class Product extends BaseModel {
   public id: number;
 
   @column()
-  public tile: string;
+  public title: string;
 
   @column()
   public address: string;

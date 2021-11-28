@@ -22,7 +22,7 @@ export default class Products extends BaseSchema {
         })
         .defaultTo('type 1');
       table.integer('sub_category_id').unsigned().notNullable();
-      table.string('tile', 255).notNullable();
+      table.string('title', 255).notNullable();
       table.string('address', 255).notNullable();
       table.text('calendar_days').notNullable();
       table.text('description').notNullable();

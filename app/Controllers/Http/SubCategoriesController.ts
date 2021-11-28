@@ -4,13 +4,14 @@ import Category from 'App/Models/Category';
 import SubCategory from 'App/Models/SubCategory';
 
 export default class SubCategoriesController {
-  public async index({}: HttpContextContract) {
+  // eslint-disable-next-line prettier/prettier
+  public async index({ }: HttpContextContract) {
     // const subCategory = await SubCategory.all();
     const subCategory = await SubCategory.query().preload('category');
 
     return subCategory;
   }
-
+  // ffd
   public async show({ params }: HttpContextContract) {
     const subCategory = await SubCategory.find(params.id);
     if (subCategory) {

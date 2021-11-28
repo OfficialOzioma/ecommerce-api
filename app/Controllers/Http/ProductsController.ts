@@ -1,5 +1,5 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
-import { schema, rules } from '@ioc:Adonis/Core/Validator';
+import { schema } from '@ioc:Adonis/Core/Validator';
 import Category from 'App/Models/Category';
 import Product from 'App/Models/Product';
 import SubCategory from 'App/Models/SubCategory';

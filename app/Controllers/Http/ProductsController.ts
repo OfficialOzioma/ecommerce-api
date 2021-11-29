@@ -20,20 +20,13 @@ export default class ProductsController {
 
     if (category && subCategory) {
       const newProductSchema = schema.create({
-        title: schema.string({ trim: true }, [
-          rules.unique({ table: 'products', column: 'title', caseInsensitive: true }),
-        ]),
+        title: schema.string({ trim: true }),
         address: schema.string(),
         calendar_days: schema.string(),
         description: schema.string(),
         price: schema.number(),
       });
-      const payload = await request.validate({
-        schema: newProductSchema,
-        messages: {
-          'title.unique': 'Product already exist',
-        },
-      });
+      const payload = await request.validate({ schema: newProductSchema });
 
       const product = new Product();
 
@@ -77,21 +70,14 @@ export default class ProductsController {
 
     if (product && category && subCategory) {
       const updateProductSchema = schema.create({
-        title: schema.string({ trim: true }, [
-          rules.unique({ table: 'products', column: 'title', caseInsensitive: true }),
-        ]),
+        title: schema.string({ trim: true }),
         address: schema.string(),
         calendar_days: schema.string(),
         description: schema.string(),
         price: schema.number(),
       });
 
-      const payload = await request.validate({
-        schema: updateProductSchema,
-        messages: {
-          'title.unique': 'Product already exist',
-        },
-      });
+      const payload = await request.validate({ schema: updateProductSchema });
 
       const user = await auth.authenticate();
 

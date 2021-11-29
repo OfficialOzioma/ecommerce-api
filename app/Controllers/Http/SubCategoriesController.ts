@@ -1,5 +1,5 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
-import { schema } from '@ioc:Adonis/Core/Validator';
+import { schema, rules } from '@ioc:Adonis/Core/Validator';
 import Category from 'App/Models/Category';
 import SubCategory from 'App/Models/SubCategory';
 
@@ -18,7 +18,7 @@ export default class SubCategoriesController {
       await subCategory.preload('category');
       return subCategory;
     } else {
-      return { Message: 'Sorry, Category not found' };
+      return { Message: 'Sorry, sub category not found' };
     }
   }
 
@@ -27,10 +27,17 @@ export default class SubCategoriesController {
 
     if (category) {
       const newSubCategorySchema = schema.create({
-        name: schema.string({ trim: true }),
+        name: schema.string({ trim: true }, [
+          rules.unique({ table: 'sub_categories', column: 'name', caseInsensitive: true }),
+        ]),
       });
 
-      const payload = await request.validate({ schema: newSubCategorySchema });
+      const payload = await request.validate({
+        schema: newSubCategorySchema,
+        messages: {
+          'name.unique': 'Sub category already exist',
+        },
+      });
 
       const subCategory = new SubCategory();
       subCategory.categoryId = category.id;
@@ -48,10 +55,17 @@ export default class SubCategoriesController {
     const category = await Category.findBy('name', request.input('category'));
     if (subcategory && category) {
       const newCategorySchema = schema.create({
-        name: schema.string({ trim: true }),
+        name: schema.string({ trim: true }, [
+          rules.unique({ table: 'sub_categories', column: 'name', caseInsensitive: true }),
+        ]),
       });
 
-      const payload = await request.validate({ schema: newCategorySchema });
+      const payload = await request.validate({
+        schema: newCategorySchema,
+        messages: {
+          'name.unique': 'Sub category already exist',
+        },
+      });
 
       subcategory.categoryId = category.id;
       subcategory.name = payload.name;

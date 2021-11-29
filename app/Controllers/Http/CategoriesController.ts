@@ -1,9 +1,10 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
-import { schema } from '@ioc:Adonis/Core/Validator';
+import { schema, rules } from '@ioc:Adonis/Core/Validator';
 import Category from 'App/Models/Category';
 
 export default class CategoriesController {
-  public async index({}: HttpContextContract) {
+  // eslint-disable-next-line prettier/prettier
+  public async index({ }: HttpContextContract) {
     // const category = await Category.all();
     const category = await Category.query().preload('subCategories');
 
@@ -23,10 +24,17 @@ export default class CategoriesController {
 
   public async store({ request }: HttpContextContract) {
     const newCategorySchema = schema.create({
-      name: schema.string({ trim: true }),
+      name: schema.string({ trim: true }, [
+        rules.unique({ table: 'categories', column: 'name', caseInsensitive: true }),
+      ]),
     });
 
-    const payload = await request.validate({ schema: newCategorySchema });
+    const payload = await request.validate({
+      schema: newCategorySchema,
+      messages: {
+        'name.unique': 'category already exist',
+      },
+    });
 
     const category = await Category.create(payload);
 
@@ -36,11 +44,18 @@ export default class CategoriesController {
   public async update({ request, params }: HttpContextContract) {
     const category = await Category.find(params.id);
     if (category) {
-      const newCategorySchema = schema.create({
-        name: schema.string({ trim: true }),
+      const updateCategorySchema = schema.create({
+        name: schema.string({ trim: true }, [
+          rules.unique({ table: 'categories', column: 'name', caseInsensitive: true }),
+        ]),
       });
 
-      const payload = await request.validate({ schema: newCategorySchema });
+      const payload = await request.validate({
+        schema: updateCategorySchema,
+        messages: {
+          'name.unique': 'category already exist',
+        },
+      });
 
       category.name = payload.name;
 

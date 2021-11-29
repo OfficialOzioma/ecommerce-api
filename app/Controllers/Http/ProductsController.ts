@@ -1,5 +1,5 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
-import { schema } from '@ioc:Adonis/Core/Validator';
+import { schema, rules } from '@ioc:Adonis/Core/Validator';
 import Category from 'App/Models/Category';
 import Product from 'App/Models/Product';
 import SubCategory from 'App/Models/SubCategory';
@@ -20,13 +20,20 @@ export default class ProductsController {
 
     if (category && subCategory) {
       const newProductSchema = schema.create({
-        title: schema.string({ trim: true }),
+        title: schema.string({ trim: true }, [
+          rules.unique({ table: 'products', column: 'title', caseInsensitive: true }),
+        ]),
         address: schema.string(),
         calendar_days: schema.string(),
         description: schema.string(),
         price: schema.number(),
       });
-      const payload = await request.validate({ schema: newProductSchema });
+      const payload = await request.validate({
+        schema: newProductSchema,
+        messages: {
+          'title.unique': 'Product already exist',
+        },
+      });
 
       const product = new Product();
 
@@ -70,14 +77,21 @@ export default class ProductsController {
 
     if (product && category && subCategory) {
       const updateProductSchema = schema.create({
-        title: schema.string({ trim: true }),
+        title: schema.string({ trim: true }, [
+          rules.unique({ table: 'products', column: 'title', caseInsensitive: true }),
+        ]),
         address: schema.string(),
         calendar_days: schema.string(),
         description: schema.string(),
         price: schema.number(),
       });
 
-      const payload = await request.validate({ schema: updateProductSchema });
+      const payload = await request.validate({
+        schema: updateProductSchema,
+        messages: {
+          'title.unique': 'Product already exist',
+        },
+      });
 
       const user = await auth.authenticate();
 

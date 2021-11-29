@@ -32,9 +32,17 @@ Install the dependencies and devDependencies and start the server.
 
 ```sh
 git clone git@github.com:OfficialOzioma/ecommerce-api.git
+```
+```sh
 cd ecommerce-api
+```
+```sh
 npm install
+```
+```sh
 node ace migration:run
+```
+```sh
 node ace serve --watch
 ```
 

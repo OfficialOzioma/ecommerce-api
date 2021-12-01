@@ -1,21 +1,20 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import { schema, rules } from '@ioc:Adonis/Core/Validator';
-import Category from 'App/Models/Category';
+import CategoryRepo from 'App/Repository/CategoryRepo';
 
-export default class CategoriesController {
+export default class CategoriesController extends CategoryRepo {
   // eslint-disable-next-line prettier/prettier
   public async index({ }: HttpContextContract) {
-    // const category = await Category.all();
-    const category = await Category.query().preload('subCategories');
-
+    const category = this.findAll();
     return category;
   }
 
   public async show({ params }: HttpContextContract) {
-    const category = await Category.find(params.id);
+    const category = await this.findById(params.id);
+
     if (category) {
-      // await category.preload('products');
-      // await category.preload('subCategories');
+      await category.load('products');
+      await category.load('subCategories');
       return category;
     } else {
       return { Message: 'Sorry, Category not found' };
@@ -36,43 +35,39 @@ export default class CategoriesController {
       },
     });
 
-    const category = await Category.create(payload);
+    const category = await this.saveCategory(payload);
 
     return { message: `Category created succussfully`, CategoryCreated: category };
   }
 
   public async update({ request, params }: HttpContextContract) {
-    const category = await Category.find(params.id);
+    const updateCategorySchema = schema.create({
+      name: schema.string({ trim: true }, [
+        rules.unique({ table: 'categories', column: 'name', caseInsensitive: true }),
+      ]),
+    });
+
+    const payload = await request.validate({
+      schema: updateCategorySchema,
+      messages: {
+        'name.unique': 'category already exist',
+      },
+    });
+
+    const category = await this.updateCategory(params.id, payload);
     if (category) {
-      const updateCategorySchema = schema.create({
-        name: schema.string({ trim: true }, [
-          rules.unique({ table: 'categories', column: 'name', caseInsensitive: true }),
-        ]),
-      });
-
-      const payload = await request.validate({
-        schema: updateCategorySchema,
-        messages: {
-          'name.unique': 'category already exist',
-        },
-      });
-
-      category.name = payload.name;
-
-      return category.save();
+      return { Message: `Category has been updated successfully` };
     } else {
       return { Message: `Sorry, Category does not exist, cannot be updated` };
     }
   }
 
   public async destroy({ params }: HttpContextContract) {
-    const category = await Category.find(params.id);
-
-    if (category) {
-      await category.delete();
-      return { Message: `Category, deleted succussfully`, CategoryDeleted: category };
-    } else {
-      return { Message: `Sorry, Category does not exist, cannot be deleted` };
+    try {
+      await this.deleteCategory(params.id);
+      return { message: `Category, deleted succussfully` };
+    } catch (error) {
+      return { error: `Category, not found` };
     }
   }
 }

@@ -20,6 +20,7 @@ This Mini eCommerce API was built with the following Technologies:
 - **[NodeJs](https://nodejs.org/en/) - Nodejs is a JavaScript runtime built on Chrome's V8 JavaScript engine.**
 - **[AdonisJs](https://adonisjs.com/) - A fully featured web framework for Node.js!**
 - **[TypeScript](https://www.typescriptlang.org/) - TypeScript is JavaScript with syntax for types.**
+- **[PostgreSQL](https://www.postgresql.org/) - PostgreSQL is a powerful, open source object-relational database system.**
 - **[Postman](https://www.postman.com/) - Postman is an API platform for building and using APIs.**
 
 ## Installation
